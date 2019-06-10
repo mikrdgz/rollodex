@@ -7,8 +7,9 @@ constructor(props){
   super(props);
 
   this.state = {
-    isLoading: true,
-    contacts: []
+    contacts: [],
+    isClicked: false
+
   };
 }
 
@@ -22,13 +23,13 @@ fetch('https://randomuser.me/api/?results=10')
 .then(data => data.results.map(user => ({
   name: `${user.name.first}`,
   address:`${user.location.street}, ${user.location.city}`,
-  email: `${user.email}`
+  email: `${user.email}`,
+  picture: `${user.picture.large}`
 }
 
 )))
 .then(contacts => this.setState({
-  contacts,
-  isLoading: false
+  contacts
 }))
 
 
@@ -36,20 +37,40 @@ fetch('https://randomuser.me/api/?results=10')
 .catch(error => console.log("parsing failed...", error))
 }
 
+buttonClick = ()=> {
+  this.setState({isClicked: true})
+
+  if (this.state.isClicked === true ){
+    document.getElementById("people").appendChild(this.state.contacts)
+}
+}
+
+
+
+
   render(){
+
     // const{isLoading, contacts} = this.state;
   return (
       <div className="App">
-        <div>   
-       {
-            !this.state.isLoading && this.state.contacts.length > 0 ? this.state.contacts.map(contact => {
-             return <p key={contact.name}><br/>{contact.name}<br/>{contact.address}<br/>{contact.email}</p>
-            }) : null
+        
+          <header><h1>Mikaela's Rollodex</h1></header>
+          {
+              this.state.contacts.map(contact => {
+             return <div id="people" key={contact.name}>
+             <p key={contact.name}>{contact.name}<br/>{contact.address}<br/><img src={contact.picture}/><br/>{contact.email}</p>
+             <button onClick={this.buttonClick}>See More</button>
+              </div>
+            
+              })
 
-          }
-        </div>
-        </div>
+            }
+    </div>
+    )
+  }
+}
 
-  )}
-        }
+
+
 export default App;
+
